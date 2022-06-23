@@ -1,0 +1,8 @@
+1º As sequências alinhadas pelo MUSCLE das espécies: Glycine max, Vigna mungo e Arabidopsis thaliana, no PLAZA's Interactive Phylogenetics Module; foram utilizadas para inferir a árvore filogenética usando o pacote IQTREE2.
+
+A especie Vigna mungo foi escolhida para essa reconstrução filogenética devido à proximidade evolutiva com Glycine max, sendo ambas da mesma família (Fabaceae), para a ver a relação filogenética entre essas duas plantas.
+Já Arabidopsis thaliana foi escolhida para essa análise por ser uma planta modelo, um dos principais alvo de estudos para entender fenomênos biológicos.
+
+2º As sequências alinhadas pelo MUSCLE dos 55 genes TLP e do gene VMungo1215G1788, considerado outgroup da árvore filogética de Glycine max, devido a está espécie estar próxima filogeneticamente da soja, mas não próxima o suficiente para ser homóloga, foram utilizadas para inferir a ávore filogenética de soja pelo IQTREE2.
+
+
