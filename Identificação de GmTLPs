@@ -1,0 +1,7 @@
+O objetivo aqui é identifcar proteínas PR-5 em soja. 
+No PLAZA foi feito o BLAST com a sequência de uma TLP de Cucumis melo, para identificar a família homóloga (HOM05D000102) que pertencem os genes com o domínio thaumatin conservado (domínio conservado presente nas proteínas TLPs).
+Com isso, 56 genes de GLycine max foram indentifcados no PLAZA que possuem o domínio thaumatin conservado, sendo um deles pertencentes à uma família homóloga diferente (HOM05D000038), tendo este evoluído de maneira convergente (possui diferentes domínios, além do domínio thaumatin, relacionados à diferentes funções).
+TLP de Arabidopsis thalian
+Confirmando que essas proteínas são de fato TLPs foi feito o BLAST usando o proteoma de soja contra a sequência a como query.
+Foram identificados 56 genes TLPs, dos quais um deles evoluiu de forma convergente, (Glyma.15G258400) e não será incluído na analise de dados com os outros genes.
+Foram selecionados matches com valor < 1e-10 e procurados por domínios conservados ( PF00314 (PFAM) and SM00205 (SMART)) para cada família para validação.
