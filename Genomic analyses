@@ -1,0 +1,9 @@
+Foi feito o alinhamento multiplo de sequências, para comparar as similiridades de sequências.
+O alinhamento mútiplo de sequências tem como objetivos: estabelecer relações filogenéticas entre diferentes proteínas, predizer domínios conservados, incluindo resíduos críticos para a função da proteína e comparar a proteína de interesse de forma mais detalhada com membros da mesma família de proteínas. 
+O alinhamento mútiplo de sequências foi feito com o MUSCLE, um algoritimo, que inclui estimativa rápida de distância utilizando
+elementos kmer, alinhamento progressivo usando uma função chamada logexpectation (LE) e refinamento (método iterativo) baseado em particionamento
+restrito que é dependente de topologia de árvore filogenética e visualizado com o msa, pacote do R, que fornece uma interface R/Bioconductor para alinhamentos multiplos de sequência.
+
+Depois foi exportado para o R o outgroup (VMungo1215G1788), que corresponde à uma proteína que compartilha o mesmo ancestral em comum com as TLPs de soja, porém não semelhante o suficiente para fazer parte do grupo interno.
+
+
