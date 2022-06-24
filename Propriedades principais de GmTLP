@@ -1,0 +1,46 @@
+DISTRIBUIÇÃO DE CROMOSSOMOS
+
+Primeiramente foi feita a análise de distribuição dos genes nos cromossomos.
+
+GO ANNOTATION
+
+Depois foi feita a anotação de Gene Ontology, ou seja, foi feito o download de anotação no GO no PLAZA para ver quais termos GO são atribuidos aos GmTLPs.
+
+O que é Gene Ontology?
+Gene Ontology fornece estruturas e conjuntos de conceitos para descrever as funções dos produtos gênicos dos organismos.
+
+ANÁLISE ESTRUTURAL
+
+Depois foi feita a análise estrutural, ou seja, foram inferidas as propriedades estruturais das proteínas, para compará-las.
+
+Como?
+Arquivos PDBs foram baixados no Alphafold na sessão de proteomas de organismos modelo de arquivos de predição compactados, e os IDs de cada gene foram identificados no UniProt.
+Com isso, foram extraídos os arquivos pdb correspondentes: os genes Glyma.10G061700 e Glyma.10G060300 possuem o mesmo ID: I1L923 (arquivo pdb: AF-I1L923-F1-model_v2.pdb.gz), devido à similaridade de sequência.
+O gene Glyma.14G077333 tem a mesma sequência do gene ID: K7M5H5. Portanto, tem o mesmo arquivo pdb: AF-K7M5H5-F1-model_v2.pdb.gz.
+O gene Glyma.14G077267 está faltando no UniProt, então a modelagem foi feita no phyre2 usando o encadeamento One to One. Neste método, o arquivo pdb de K7M5H5 foi fornecido como modelo para modelagem e a sequência de aminoácidos da proteína de Glyma.14G077267.
+
+###  Análise da estrutura secundária
+As estruturas secundárias foram contadas analisando os arquivos PDBs da interface Web Stride (http://webclu.bio.wzw.tum.de/cgi-bin/stride/stridecgi.py).
+
+LOCALIZAÇÃO CELULAR E PEPTÍDEO SINAL
+
+A presença/ausência de peptídeos de sinal foi analisada com SignalP 5.0 (http://www.cbs.dtu.dk/services/SignalP/) e o resumo de previsão foi baixado para análise em R.
+
+O que são peptídeos sinais?
+Peptídeo sinal é uma sequência que possui entre 15 e 30 aminoácidos geralmente localizada na região N-terminal de proteínas.[1]. 
+Muitas das proteínas sintetizadas nos compartimentos celulares não desempenham seus papéis biológicos necessariamente nos locais
+onde são geradas, necessitando ser exportadas para a região específica onde exercerão suas funções. A sequência do peptídeo sinal
+tem por função marcar as proteínas que serão exportadas para determinados locais, como por exemplo, o ambiente extracelular. Estas
+proteínas são reconhecidas por meio do peptídeo sinal, o qual, após a exportação, é removido da proteína por meio da ação de proteases.
+Peptídeos sinais também podem ser compostas por sequências localizadas internamente em proteínas, não sendo posteriormente removidas,
+mantendo-se como parte integrante da proteína. IMPORTÂNCIA: marcar as proteínas que serão exportadas para determinados locais, como por exemplo,
+o ambiente extracelular.
+
+PROPRIEDADES GENÔMICAS DAS PR-5
+
+Foi analisado o número de exons e o comprimento da sequência.
+
+RESUMO DOS DADOS EM TABELA
+
+Por fim, tudo foi resumido em uma única rabela.
+
