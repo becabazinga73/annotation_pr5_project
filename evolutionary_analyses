@@ -1,0 +1,29 @@
+-> Árvore de soja
+
+A árvore dos genes de soja com o gene de Vmungo (VMungo1215G1788) como outgroup foi inferida com o IQTREE2.
+
+Foi criada a variável tree_outgroup, lendo a árvore com a função tree_outgroup.
+Depois foi criada outra variável aenas para obter a árvore bruta para obter os nomes dos nós para agrupamento. Depois a árvore foi visualizada com o ggtree, um pacote
+que tem a função de visualizar árvores filogenéticas e dados associados heterogêneos com base na gramática de gráficos ggtree
+fornece funções para visualizar a árvore filogenética e seus dados associados em R.
+Depois foi criado um vetor de ordem de genes para reequilibrar fatores em gráficos adicionais, com a funão rev, que fornece uma versão invertida do argumento.
+Dentro da função rev foi atribuida a função get_taxa_name, que extrai um vetor ordenado das pontas do clado selecionado ou da árvore inteira com base no gráfico ggtree().
+
+-> Estrutura dos genes
+
+Primeiramente foi feito o download do arquivo gff das funcionalidades dos éxons, importado para o R com a função import e atribuído à variável gff. Depois 
+foi importada a seuqência PR-5 e atribuida à variável seqs_PR5.
+Depois foram selecionados os genes que fazem parte do conjunto de genes em seqs_PR5 e são do tipo "gene", do arquivo gff (de funcionalidades de exons, apenas)
+Depois foi atribuído à variável gene.str.genes$start o valor 1 e o comprimento de gene_str_genes à variável gene.str.genes$end.
+Depois foi atribuido valores vazios para o outgroup, atribuindo o valor 1 para vmungo$start e vmungo$end e o nome em V.mungo$Name <- "Vmungo".
+
+
+Depois foram selecionados os exons, através da seleção do tipo de gff = "exon" e que possuem os gff$genes_id dentro de seqs_PR5. Em seguida foram substituidos os
+IDs dos genes apenas pelo número dos éxons na variável ID com a função gsub(). A função gsub() substituiu a aplavra exon e tudo que vinha antes dela, primeiramente por 
+nada, depois pelo oq restou do conteúdo da variável ID.
+Depois os exons foram divididos em grupos de acordo com o nome do gene, através da função split() divide um vetor ou quadro de dados em grupos de 
+acordo com os parâmetros da função.
+Depois 
+
+Depois foram unidos os dois data.tables: gene.str.exons e ids, pelas variáveis Name e Gene_ID, usando a função left_join, que junta dois data.tables.
+Em seguida, foi atribuido à variável Name as observações de name, com isso as colunas de name e Gene_name x e y formaram uma só coluna.
