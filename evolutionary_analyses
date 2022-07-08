@@ -77,3 +77,8 @@ os valores de largura e unidade. Em seguida, foram definindas as 21 cores dos mo
 é possível definir a escala de x contínuo (expand = Constantes que garantem que os dados sejam colocados a alguma distância dos eixos.)
 Por fim, foi utilizada a função theme_tree2() para definir o tema. 
 
+## Identification of cis-regulatory elements
+A maioria dos métodos de bioinformática baseados em matriz de peso de posição (PWM) desenvolvidos para prever sítios de ligação de fator de 
+transcrição (TFBS) assumem que cada nucleotídeo no motivo da sequência contribui independentemente para a interação entre a proteína e a 
+sequência de DNA.
+
