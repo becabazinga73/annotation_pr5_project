@@ -38,3 +38,42 @@ com os argumentos  arrowhead_height e arrowhead_width. Depois foram definidas as
 scale_x_continuous, para definir a escala de x contínuo (expand = Constantes que garantem que os dados sejam colocados a alguma distância dos eixos.)
 Por fim, foi utilizada a função theme_tree2, que é utilizada para dar um tema ao gráfico. Nessa caso, foi utilizado o argumento legend.position="none", para
 atribuir nenhuma posição de legenda.
+
+
+-> Descoberta de motifs de novo("from the beginning")
+Primeiramente foi utilizada a função options(), com o argumento de direção de onde está localizado o meme, que é um algoritimo implementado ao pacote universalmotif.
+Depois foi carregado o arquivo R de funções que foram criadas manualmente, o arquivo functions.R e criado o diretório MEME_motif. Depois foi atribuído à variável
+meme, a função run_meme, com o argumento target.sequences = seqs_pr5, o número de motifs desejados = 20 (obtido em literaturas anteriores), com a largura mínima = 6 e máxima = 50. Além disso, 
+dentro dessa função foi fornecido o diretório do output da função. Depois com o argumento overwrite = TRUE, foi feita a substituição do diretório.
+Depois foram criados intervalor para fazer a plotagem , atribuindo à variável a função data.frame, que cria data frames, com o argumento start = v.mungo$start,
+end=v.mungo$end, gene_id=v.mungo$Name e Motif_name='ABC'. Depois foi atribuída à variável motif.ranges (range = intervalo), a função meme2ranges, que está dentro
+das funções do arquivo functions.R.
+A função meme2ranges: 
+@acessando slots na classe S4 (o slot é um componente nomeado do objeto que é acessado usando o operador de subconjunto especializado @(pronunciado em))
+S4 fornece uma abordagem formal para OOP funcional (A programação orientada a objetos (OOP) é um modelo de programação de computador que organiza 
+o design de software em torno de dados ou objetos, em vez de funções e lógica).
+A função meme2ranges foi criada atribuindo à variável meme2ranges uma função: function(meme_output), onde meme_output é o output da variável meme, onde 
+mlist<-lapply(1:length(meme_output$sites), function (x) {
+return(as.data.frame(meme_output$sites[[x]]@ranges))
+  })
+(ou seja, foi criada uma lista com a função lapply, onde para cada elemento de 1 ao comprimento de sites em meme_output, foi aplicada a função para x:
+return (que retorna o último output para uma função automaticamente) (as.data.frame (retorna um data frame) (meme_output$sites[[x]]@ranges)) (retorna 
+os slots de intervalo da classe S4 de um data frame de x em sites de meme_output)
+Depois, os elemtentos da lista (mlist) foram renomeados com os nomes de meme_output$sites, com a função names() (a variável names(mlist) representa os nomes 
+a serrem renomeados e o objeto atribuído à ela (names(meme_output$sites)), representa os nomes que serão usados para essa renomeação).
+
+Depois, os objetos de motif.ranges foram renomeados para c("start", "end", "gene_id", "Motif_name"), utilizando a função names() novamente.
+Em seguida, foi atribuída à variável motif_structure_plotdata os seguintes elementos: foi utilizada a variável motif.ranges, que foi unida com a variável ids, pela função left_join,
+onde "gene_id" = "Gene_ID". Em seguida, foi criada uma nova variável chamada gene_id contendo a variável name. Em seguida foram selecionadas apenas
+as variáveis pela função select. Por fim, foi utilizada a função rbind para unir todo conteúdo anterior com a variável motif.ranges.v.mungo.
+Depois, foi atribuida à variável motif_structure_plotdata$gene_id, a função forcats::fct_relevel, para renivelar o conteúdo de motif_structure_plotdata$gene_id
+à partir do nivelamento de gene_order_tree.
+Depois esses dados foram plotados com a funçã ggplot dentro da variável motif_structure, utilizando a variável motif_structure_plotdata como data e a estética 
+de xmax = end e xmin = start (os menores e maiores valores do eixo x) e y = gene_id dos motifs encontrados. Foi utilizada ainda a função geom_gene_arrow, para definir a altura(height) e a largura (width)
+das setas, com a função unit() para definir os valores e as unidades. Depois foi utilizada a função geom_subgene_arrow, com a variável motif_structure_plotdata como data
+e em estética, os valores de início e fim dos motifs como xsubmax=end, xsubmin=start e fill=Motif_name. Em seguida, foi atribuído ao argumento show.legend o vetor FALSE.
+Em seguida, foi atribuído ao argumento arrowhead_height, dentro da função unit(), os valores e unidades de altura, e no argumento arrowhead_widgth, dentro da função unit,
+os valores de largura e unidade. Em seguida, foram definindas as 21 cores dos motifs, com a função scale_fill_manual, seguidos dos valores de 0 e 0, argumento da função scale_x_continuous. Com essa função 
+é possível definir a escala de x contínuo (expand = Constantes que garantem que os dados sejam colocados a alguma distância dos eixos.)
+Por fim, foi utilizada a função theme_tree2() para definir o tema. 
+
