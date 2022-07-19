@@ -82,3 +82,78 @@ A maioria dos métodos de bioinformática baseados em matriz de peso de posiçã
 transcrição (TFBS) assumem que cada nucleotídeo no motivo da sequência contribui independentemente para a interação entre a proteína e a 
 sequência de DNA.
 
+-> Identificação de elementos cis-reguladores
+
+Primeiramento foi deifinido o tempo máximo para esperar uma resposta até desistir, com a função timeout=200, dentro da função options, que defini opções globais
+que afetam como o R calculo e exibe seus resultados.
+Depois foi atribuído à variável genome, a função readDNAStringSet do pacotre BioStrings para ler a sequeência de DNA do genoma de soja à partir do download 
+desse genoma no PLAZA 5.0.
+Depois foi atribuído à função pr5.granges a variável gff, que contém os nomes dos genes TLPs dentro do gene_id da variável gff, além do type de gff ser == "gene".
+
+# Load motifs
+Depois foram carregados os motifs com a função read.meme para ler o arquivo PWM_Glycine_max.meme.txt, Protein binding site weight matrix (Matriz de
+peso do sítio de ligação à proteína). O carregamento desse arquivo foi atribuído à variável motifs.
+
+# Load ID mapping
+Depois foram carregados os mapeamentos dos IDs, com a função read.csv e atribuído esse carregamento à variável mapping. Depois foi atribuído à variável mapping, o filtro
+para remover os dados com NAs e em seguida foi atribuído à variável mapping$TF_Locus a função gsub para substituir os pontos seguidos de números depois do nomes dos genes 
+(\\.[0-9]$) por nada, da variável mapping$TF_Locus.
+
+# Load TF mapping
+Em seguida, foi carregado a lista de fatores de transcrição de Glycine max, com a função read_tsv do pacote readr e atribuído à função tf.fam.
+Em seguida, foi atribuído à variável tf.fam, a função as.data.frame para converter as colunas da variável tf.fam em um data.frame.
+Depois, foi atribuído à variável tf.fam$TF_ID a função gsub, para substituir o ponto e os números seguidos dos nomes dos genes (\\.[0-9]\\.p$), por nada, da variável
+tf.fam$TF_ID. 
+Depois, os valores de upstream, que é o DNA genômico que precede o local de início da transcrição, na região 5' da fita de DNA e downstream, que é o DNA
+genômico localizado após o fim da região de transcrição, foram definidos em 100 e 200, respectivamente, como em Arabidopsis thaliana. Além disso, o valor de 
+threshold, que é o valor limite do tipo logodds, que foi definida em sequência pela variável threshold.type. Depois foi definida a variável ranges (intervalos)
+com o objeto pr5.granges. Em seguida, foi definida a variável motif.mapping com o objeto mapping.
+
+# Get promoter sequences (from -1000 bp to + 200 bp relative to the TSS)
+
+Depois foram pegas as sequências de promotores (de -1000 bp para + 200 relativo ao TSS - transcription start site)
+Isso foi feito da seguinte forma: foi atribuído à variável promoters a função promoters, do pacote GenomicRanges, que retorna um objeto do mesmo tipo e comprimento
+que x contendo os intervalos do promotor. Além disso, os intervalos do promotor se estendem ao redor do local de início da transcrição (TSS), que é definido como start(x).
+Dessa forma, dentro dessa função foi utilizada a variável ranges, que é um objeto GenomicRanges e os valores de upstream e downstream, definidos anteriormente.
+Em seguida, foi criada a variável promoters.seq, atrbuída a função getSeq, do pacote BioStrings, que extrai  um conjunto de sequências (ou subsequências)
+de um contêiner de sequência como um objeto BSgenome (A classe BSgenome é um container para armazenar as sequências completas do genoma de um determinado 
+organismo) ou outro. Dentro dessa função foram atribuídas as variáveis genome e promoters, como x (BSgenome or XStringSet) e names(Quando x é um BSgenome, os nomes devem
+ser um vetor de caracteres contendo os nomes das sequências em x de onde obter as subsequências), respectivamente. Em seguida, a variável promoters.seq foi nomeada
+com os nomes de gene_id da variável ranges. 
+Por fim, foi criado um arquivo fasta chamado promoters.fasta com a função writeXStringSet, que escreve um objeto XStringSet em um arquivo. O objeto StringSet escrito 
+foi o correspondente à variável promoters.seq.
+
+# Scanning sequences for cis-regulatory elements
+
+Aqui foram scaneadas sequências por elementos cis-regulatórios.
+Aqui foi atribuída à variável a função scan_sequences, que é usada para escanear sequências de qualquer alfabeto usando as matrizes PWM de um conjunto de motifs de entrada.
+Nessa função foi utilizada a variável motifs como motifs de entrada, promoters.seq como sequências(XStringSetSequências para escanear. O alfabeto deve corresponder ao motivo),
+threshold com o valor de threshold indicado anteriormente, o threshold.type também indicado anteriormente (logodds - o  logit da probabilidade é o logaritmo das probabilidades)
+e o calc.pvals = TRUE (Calcule os valores P para cada acerto. Esta é uma opção de conveniência que simplesmente fornece motif_pvalue()os motivos de
+entrada e as pontuações de cada acerto. Tenha cuidado ao definir isso para TRUE se você antecipar milhares de ocorrências: espere alguns segundos ou 
+minutos para que os cálculos sejam concluídos. Aumentar o nthreadsvalor pode ajudar muito aqui. Consulte Detalhes para obter mais informações sobre 
+o cálculo do valor P.)
+Depois foi atribída a variável scan a função as.data.frame para a variável scan, para converte-la em um data.frame.
+Em seguida, foi atribuída à variável scan, a variável scan com valor $pvalue < 0.05, nas linhas. Por fim, foi atribuída à variável scan.list, a função
+split que divide os dados de entrada ( x) em diferentes grupos ( f). Os argumento utilizados froam as variáveis scan (x) e scan$sequence (f).
+
+# Add CREs to PR-5 genes
+
+Adicionar Cis-regulatory elements para os genes PR-5. Para isso, foi criada a variável scan.list.mapping, atribuída à função lapply, que pega uma lista, um vetor ou um 
+data frame como imput e retona uma lista como output e aplica uma função à cada elemento da lista. Nesse caso, foi pega a variável scan.list, e aplicada 
+a função para em y (variável), mesclar x e motif.mapping, por (by)= 1 (especificações das colunas usadas para mesclagem), em final (variável), mesclar 
+y e tf.fam, por x (by.x)= "TF_Locus" e por y (by.y) = 1. Em seguida, a variável final foi atribuída, dentro da função, à variável final, diferente de duplicado
+(!duplicated), as colunas 1, 2, 5, e 6 dessa mesma variável final e por fim retornar o final.
+
+# Filter data to remove redundant matches
+Filtrar data para remover matches redundantes.
+
+Foi atribuído à variável scan.list2, a função lapply, que pegou a variável scan.list.mapping e aplicou a função, onde x é uma variável atribuída a x, onde 
+as variáveis de x x$TF_Locus, x$sequence e x$start (rows) foram ordenadas pela função order. Ainda dentro dessa função foi atribuída a variável difs a função abs, que retorna o valor absoluto,
+da função diff (usada para encontrar a diferença entre cada par consecutivo de elementos de um vetor) dos valores de x$start. Em seguida, foi atribuída a variável 
+x$diff, os valores: 10 e difs. Em seguida, foi atribuída à variável ind a função with com x como dados
+
+
+
+
+
