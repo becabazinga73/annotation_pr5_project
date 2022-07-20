@@ -138,6 +138,7 @@ Em seguida, foi atribuída à variável scan, a variável scan com valor $pvalue
 split que divide os dados de entrada ( x) em diferentes grupos ( f). Os argumento utilizados froam as variáveis scan (x) e scan$sequence (f).
 
 # Add CREs to PR-5 genes
+ELEMENTOS CIS-REGULATÓRIOS =  são regiões de DNA não codificante que regulam a transcrição de genes vizinhos.
 
 Adicionar Cis-regulatory elements para os genes PR-5. Para isso, foi criada a variável scan.list.mapping, atribuída à função lapply, que pega uma lista, um vetor ou um 
 data frame como imput e retona uma lista como output e aplica uma função à cada elemento da lista. Nesse caso, foi pega a variável scan.list, e aplicada 
@@ -151,7 +152,23 @@ Filtrar data para remover matches redundantes.
 Foi atribuído à variável scan.list2, a função lapply, que pegou a variável scan.list.mapping e aplicou a função, onde x é uma variável atribuída a x, onde 
 as variáveis de x x$TF_Locus, x$sequence e x$start (rows) foram ordenadas pela função order. Ainda dentro dessa função foi atribuída a variável difs a função abs, que retorna o valor absoluto,
 da função diff (usada para encontrar a diferença entre cada par consecutivo de elementos de um vetor) dos valores de x$start. Em seguida, foi atribuída a variável 
-x$diff, os valores: 10 e difs. Em seguida, foi atribuída à variável ind a função with com x como dados
+x$diff, os valores: 10 e difs. Em seguida, foi atribuída à variável ind a função with com x como dados, para calcular índices dos elementos que são redundantes, ou seja,
+o mesmo motif aparecendo em matches difernetes, mas uma posição à frente ou atrás do match anterior. Em seguida, dentro dessa mesma função, foi atribuída 
+a variável x$isnew com a função ifelse, que tem como argumentos o valor teste, que é o índice definido anteriormente e sim e não, para o valor teste, como 
+"Diff" e "Same", respectivamente. Em seguida, foi atribuída a variável x$isnew[1], o objeto "Diff". Por fim, foi atribuído à variável y, a variável x que possui
+o valor de diff > que 1 e x$isnew != de "Same", nas linhas.
+
+Em seguida, foi atribuída a variável unimotifout2freq, a função function(list.mapping) (função criada), onde foi atribuída à variável freq, a função lapply, com
+list.mapping como argumento e a função function(x), seguida da função as.data.frame com a função table utilizando x$Family como argumento, para converter
+essa table, com esse dado, em um data frame. Com isso será criada uma lista de data frames com a frequência de CREs. .
+Em seguida, as colunas com o nome 'Freq' foram substituidas pelos nomes dos ids. 
+
+Por fim, as listas foram reduzidas a um data frame com uma coluna por nomes dos genes.
+
+Com  isso, a função criada foi utilizada com a variável scan.list2., que teve suas linhas renomeadas com os genes IDs da variável ids.
+
+Por fim, foi criado o heatmap com a função pheatmap, tendo como primeiro arguemnto a função t(), que faz a transposição dos dados(mudar a loclaização de linhas e colunas),
+seguido do argumento com a função display_numbers, que define se os numeros das celulas serao exibidos ou não.
 
 
 
