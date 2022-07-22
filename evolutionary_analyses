@@ -1,6 +1,15 @@
+-> Árvore sobre as espécies 
+A árvore sobre as espécies foi inferida usando o IQTREE2, que é um software de inferência filogenética. Essa árvore foi inferida para conhecer as relações
+evolutivas das TLPs de três espécies diferentes (G. max, V. mungo e A. thaliana), ou seja, quando essas TLPs se divergiram nessas três espécies, ao longo 
+do tempo.
+
 -> Árvore de soja
 
-A árvore dos genes de soja com o gene de Vmungo (VMungo1215G1788) como outgroup foi inferida com o IQTREE2.
+A árvore dos genes de soja com o gene de Vmungo (VMungo1215G1788) como outgroup foi inferida com o IQTREE2. Essa árvore foi inferida para se conhecer
+as relações evolutivas dos genes TLPs em soja, utilizando um gene de V. mungo como grupo externo para enrraizar a árvore, onde o grupo externo é 
+próximo o suficiente para permitir a inferência de dados de características ou sequenciamento molecular, mas longe o suficiente para ser um grupo
+externo claro.
+
 
 Foi criada a variável tree_outgroup, lendo a árvore com a função tree_outgroup.
 Depois foi criada outra variável aenas para obter a árvore bruta para obter os nomes dos nós para agrupamento. Depois a árvore foi visualizada com o ggtree, um pacote
@@ -10,6 +19,8 @@ Depois foi criado um vetor de ordem de genes para reequilibrar fatores em gráfi
 Dentro da função rev foi atribuida a função get_taxa_name, que extrai um vetor ordenado das pontas do clado selecionado ou da árvore inteira com base no gráfico ggtree().
 
 -> Estrutura dos genes
+
+Aqui foi feita a análise de estruturas dos genes, para se conhecer tais estruturas, ou seja, os limites dos exons e introns.
 
 Primeiramente foi feito o download do arquivo gff das funcionalidades dos éxons, importado para o R com a função import e atribuído à variável gff. Depois 
 foi importada a seuqência PR-5 e atribuida à variável seqs_PR5.
@@ -41,6 +52,8 @@ atribuir nenhuma posição de legenda.
 
 
 -> Descoberta de motifs de novo("from the beginning")
+Aqui foi feito a análise para descoberta de motifs, que são padrões recorrentes que possuem função biológica bem definida.
+
 Primeiramente foi utilizada a função options(), com o argumento de direção de onde está localizado o meme, que é um algoritimo implementado ao pacote universalmotif.
 Depois foi carregado o arquivo R de funções que foram criadas manualmente, o arquivo functions.R e criado o diretório MEME_motif. Depois foi atribuído à variável
 meme, a função run_meme, com o argumento target.sequences = seqs_pr5, o número de motifs desejados = 20 (obtido em literaturas anteriores), com a largura mínima = 6 e máxima = 50. Além disso, 
@@ -78,6 +91,10 @@ os valores de largura e unidade. Em seguida, foram definindas as 21 cores dos mo
 Por fim, foi utilizada a função theme_tree2() para definir o tema. 
 
 ## Identification of cis-regulatory elements
+
+Aqui foi feita a identificação de elementos cis-regulatórios, que são regiões do DNA não codificantes, que regulam a transcrição de genes vizinhos.
+
+
 A maioria dos métodos de bioinformática baseados em matriz de peso de posição (PWM) desenvolvidos para prever sítios de ligação de fator de 
 transcrição (TFBS) assumem que cada nucleotídeo no motivo da sequência contribui independentemente para a interação entre a proteína e a 
 sequência de DNA.
@@ -170,7 +187,14 @@ Com  isso, a função criada foi utilizada com a variável scan.list2., que teve
 Por fim, foi criado o heatmap com a função pheatmap, tendo como primeiro arguemnto a função t(), que faz a transposição dos dados(mudar a loclaização de linhas e colunas),
 seguido do argumento com a função display_numbers, que define se os numeros das celulas serao exibidos ou não.
 
+## Gene duplication analysis
+Depois foi feita uma análise de duplicação de genes e distribuição de ka/ks (número de substituições não sinonimas por sítio não sinônimo para em um
+determinado período de tempo, para o número de substituições sinônimas por sítio sinônimo) por cada modo de duplicação.
+Em genética , a razão K a / Ks , também conhecida como razão ω ou d N / d S , [a] é usada para estimar o equilíbrio entre mutações neutras ,
+seleção purificadora e mutações benéficas atuando em um conjunto de proteínas homólogas codificadoras genes .
 
+Depois foi calculado algumas estatísticas sobre genes TLPs duplicados.
 
+Por fim, tudo foi combinado em uma única figura.
 
 
