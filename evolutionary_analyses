@@ -195,6 +195,12 @@ seleção purificadora e mutações benéficas atuando em um conjunto de proteí
 
 Depois foi calculado algumas estatísticas sobre genes TLPs duplicados.
 
+# Calcular a região dos cromossomos 10,11 e 14 que estão os genes TLPs.
+
+Genes GmTLP25 à GmTLP30, no cromossoma 10 = 225 kb
+Genes GmTLP31 à GmTLP37, no cromossomo 11 = 34.678 kb
+Genes GmTLP43 à GmTLP48, no cromossomo 14 = 42.911 kb
+
 Por fim, tudo foi combinado em uma única figura.
 
 
