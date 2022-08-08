@@ -1,0 +1,193 @@
+Transcriptomic analysis of GmPR-5 genes.
+
+Primeiramente fo carregado o arquivo expression.RData que contem os dados de expressão dos genes GmTLPs. Deposi foi atribído a variável globalexp[is.na(globalexp)], o valor 0 
+para atribuir todos os valores nas da variavel globalepxression, o valor 0. Depois foi atrivuída a variável globalexpression a função log2 para calcular o log na base 2
+do objeto globalexpression+1.
+
+# criação de metadata contendo nome da amostra, tecido e classe de estresse (biótico ou abiótico)
+
+Foi atribuído a variável metadata1 a leitura do arquivo atlas_metadata_stress_samples.tsv, com o read read.csv, mas apenas das colunas 5,7,1. Além disse, dentro dessa função 
+foram usados os argumentos header, onde o padrão é TRUEque a maioria dos arquivos semelhantes a tabelas têm cabeçalhos e sep= "\t", já que é um arquivo tabulado.
+
+Depois foi atribuído a variavel metadata2 a leitura do arquivo newsamples_metadata_stress_samples.tsv, das colunas 5,7,1,  com a função read.csv.
+Em seguida, foi criada a variável medata2 com o objeto metadata2$Biosample, que está na variável stress_samples, ou seja, as linhas de stress_sample que estão presentes em metadata$Biosample.
+A variável stress_samples foi criada no arquivo create_expression_dataframes.R. Para isso, primeiramente foi carregado o arquivo stress_samples_for_DGE_analysis.RData,
+que contém os dados de estresses das amostras. Depois de carregado o arquivo, foi criada a variável abiotic_samples, com a função reduce, que recebe 
+uma função de dois argumentos e uma lista ou vetor x que deve ser 'reduzido' usando f. A função é chamada primeiro nos dois primeiros componentes de x, depois
+com o resultado disso como primeiro argumento e o terceiro componente de xcomo segundo argumento, depois novamente com o resultado da segunda etapa como primeiro
+argumento e o quarto componente de x como o segundo argumento etc. Na função reduce foi utilizado o argumento rbind e a variável abiotic_samplelist, da variável BioSample..
+Depois foi feito o mesmo com as amostras bióticas, atribuído a variável biotic_samples. Com isso, foi atribuído a variavel stress_samples, as variáveis abiotic_samples e biotic_samples.
+
+Em seguida, foi criada a variável metadata, atribuída à função rbind, que uni as variáveis por linhas, das variáveis matadata1 e metadata2. À variáel metadata[is.na(metadata)],
+foi atribuído o valor "none". Em seguida, os nomes das linhas da variável metadata foram modificados para os nomes da primeira coluna da variável metadata.
+Em seguida, a variável metadata$BioSample foi atribuída o valor nulo, ou seja, NULL. Depois os nomes das colunas de metadata foram modificados para Tissue e Stress.
+Em seguida, foi criada a variável tissues, com os nomes de alguns tecidos para serem removidos("callus", "inflorescences", "seedling", "suspensor", "endosperm"), pois tem
+poucas amostras. Com isso, em seguida, foi criada a variável removed_samples, atribuída a função rownames com o objeto metadata[metadata$Tissue %in% tissues, ], ou seja,
+os nomes das linhas de tissues que estão dentro da variável Tissue da vari´vel metadata. Depois, foi criada a variável globalexp , atribuído á variável
+globalexp[, !c(colnames(globalexp) %in% removed_samples)], ou seja, só serão selecionos os nomes das colunas que são diferentes dos que estão na variável removed_samples.
+Em seguida, foi atribuída À variável metadata, a variável metadata[!rownames(metadata) %in% removed_samples, ], selecionando todos os nomes das linhas que estão em removed_
+samples.
+Em seguida, foi atribuída à variável metadata$Tissue, a função str_to_title para modificar o título para letra maiuscula da variável metadata$Tissue (a primeira letra).
+
+# Customizar anotação de cores e legenda para plotar um heatmap
+ Primeiramente foram atribuídas à variável colors, as cores. Em seguida, foi atribuído à variável ann_colors a função list, que cria uma lista, com os argumentos Tissue = 
+ colors[seq_along(unique(metadata$Tissue))], que selecionas colors, de 1 até o comprimento do objeto, que são unicos, utilizando a função unique, da variável metada$Tissue
+ e Stress = aos ids das cores c("#7570B3", "#E7298A", "#66A61E").
+ Em seguida, foi atribuída à variável names(ann_colors$Tissue), o objeto unique(metadata$Tissue), ou seja, os nomes de da variável ann_colors$Tissue foram atribuídos aos
+ valores únicos de metada$Tissue. Em seguida, a mesma coisa foi feita com a variável Stress, da variável metadata. 
+ Por fim, foi atrbuído à variável palette, a função colorRampPalette, com a função brewer.pal, do pacote RColorBrewer, como argumento, com o nome da paleta e o número, além do número de cores.
+ 
+ # Plot do heatmap
+ 
+ Primeramente foram carregados os pacotes ComplexHeatmap e ggplotify. Em seguida, as linhas de globalexp foram modificadas com a função rownames à partir da criação da variável
+ rownames(globalexp), atribuída à ids$Gene_name[ids$Gene_ID %in% rownames(globalexp)], ou seja, foram selecionadas as variáveis Gene_name, que possuem os Gene_IDS que estão
+ nos nomes das linhas de globalexp.
+ Em seguida, foi utilizada a função ht_opt, que define opções globais para heatmaps, com os arguementos legend_labels_gp e legend_title_gp , para definir parâmetros para
+ o heatmap, como tamanho da folte e negrito.
+ Em seguida, foi atribuída à variável cheatmap_global, a função pheatmap, para criar o heatmap, utilizando como arguemento a variável globalexp, annotation_col, a variável
+ matadata, annotation_colors, a palette e alguns outros parâmetros. Por fim, foi criada a variável cheatmap_global_ggplot, atribuída à função as.ggplot, com a variável
+ cheatmap_global para converter o pheatmap em um ggplot. Em seguida esse gplot foi salvo com a função ggsave.
+ 
+ ## Calcule o índice de especificidade do tecido Tau:
+
+O índice tau indica quão específico ou amplamente expresso é um gene ou transcrito, dentro dos tecidos estudados. Para esse fim, usamos os dados de expressão de
+genes específicos de tecido do GTEx (versão 8) para calcular o índice de tau para cada gene humano e transcrito. Genes com índice tau próximo a 1 são expressos 
+mais especificamente em um tecido, enquanto genes com índice tau próximo a 0 são expressos igualmente em todos os tecidos estudados.
+
+Primeiramente foram carregados os arquivos functions.R e tree_clusters.rda. Depois foi atribuída à variável gene_order_tree, a função gsub, que substitui strings, que nesse
+caso, substituiu \\|.*, por nada, na variável gene_order_tree.
+
+# criando danta frames com indices tau
+
+Foi atrubuída a variável tau_pr5 a função data.frame, para criar um data frame, onde os seguintes argumentos foram definidos: Gene=rownames(globalexp), 
+                      Tau = as.numeric(apply(globalexp, 1, fTau)), 
+                      stringsAsFactors = FALSE
+                      (A função fTau foi criada em function.R)
+                      
+# Creando daata frames  de genes e seus clusters filogenéticos
+
+Foi atrubído à variável clusters, a função data.frame para criar um data frame, com os seguintes argumentos: Gene=gene_order_tree,
+                       Cluster=c(rep("C13", 3), rep("C12", 2), rep("C11", 3), rep("C10", 1), rep("C9", 2), rep("C8", 5), rep("C7", 4), rep("C6", 8), rep("C5", 4), rep("C4", 7), rep("C3", 5), rep("C2", 5), rep("C1", 7)),
+                       stringsAsFactors = FALSE
+                       seguido de [-1,] ou seja, removendo a primeira linha.
+                       
+                      
+# Combinando data frames 
+Primeiramente foi atrbuído à variável tau_plotdata, a função merge, para unir as variáveis tau_pr5 e clusters
+Depois foi carregado o pacote ggplot2.
+Depois foi atrbuído à variável tau_violin à função ggviolin, do pacote ggpubr para plotar um gráfico violino com as informações de tau, que foi salvo com a função ggsave.
+
+# Análise de genes pr5 expressos diferencialmente
+
+Vamos executar as funções definidas anteriormente para encontrar genes GmPR-5 expressos diferencialmente.
+
+Primeiramente foi carregado o arquivo stress_samples_for_DGE_analysis.RData
+
+# ---- Verifique se todas as amostras estão no quadro de dados da expressão----
+lapply( biotic_samplelist , function ( x ) {
+  y  <- all( x $ BioSample  %in% colnames( stressexp ))
+  retornar ( y )
+})
+lapply( abiotic_samplelist , function ( x ) {
+  y  <- all( x $ BioSample  %in% colnames( stressexp ))
+  retornar ( y )
+})
+# ----Remova fgraminearum e rsolani porque eles não estão no quadro de dados da expressão----
+biotic_contrast_list $ fgraminearum  <-  NULL
+biotic_samplelist $ fgraminearum  <-  NULL
+biotic_samplelist $ rsolani  <-  NULL
+biotic_contrast_list $ rsolani  <-  NULL
+# ----Remova o zinco porque os genes têm os mesmos valores para todas as amostras
+abiotic_contrast_list $ zinco  <-  NULL
+abiotic_samplelist $ zinco  <-  NULL
+# ----Remova mphaseolina porque todos os genes têm valores iguais para todas as amostras ----
+biotic_contrast_list $ mphaseolina  <-  NULL
+biotic_samplelist $ mphaseolina  <-  NULL
+# ----Executar DGE para estresse abiótico----
+rownames( stressexp ) <-  ids $ Gene_name [ ids $ Gene_ID  %in% rownames( stressexp )]
+
+
+
+
+# Este pedaço foi definido como eval=FALSE devido ao longo tempo de execução.
+# Os objetos resultantes foram salvos em dge_objects.RData
+source( arquivo  =  ' /home/rebeca/Desktop/Projeto_PR-5/code/functions.R ' )
+
+Em seguida, os valores de na de stressexp, abiotic_contrast_list e abiotic_samplelist foram definidos como 0. Em seguida, foi atribuída a variável deg_abiotic, a função
+parallel_DGE que foi criada em functions.R, que foi rodada com listas de amostras e contraste bioticos e abioticos.
+
+# Processar data para plotar heatmap
+
+Foi atribuída a variável abiotic_hm_plotdata à variável deg_abiotic. Em seguida, os nomes das linhas dessa variável criada foi modificada para os nomes dos genes 
+da variável abiotic_hm_plotdata  depois essa variável Gene foi removida através da atribuição dessa variável ao valor nulo, ou seja, NULL. Além disso, os valores
+entre 0.58 e -0.58 foram considerados como NA. A mesma coisa foi feita com valores bióticos.
+
+
+# Criando metadata data frame para stress
+Em seguida, foi atribuída à variável metadata_abiotic, a função data.frame para criar um dta frame com row.names=colnames(abiotic_hm_plotdata),
+                               Stress=gsub("-.*", "", colnames(abiotic_hm_plotdata)). Em seguida, alguma nomes foram midifcados com a função gsub e str_to_title.
+O mesmo foi feito com o metadata biótico.
+Em seguida, as linhas de abiotic_hm_plotdata e biotic_hm_plotdata foram renomeadas para os nomes de Genes em IDs, que continham os nomes de Gene_ID em rownames(biotic_hm_plotdata) ou 
+                                                 rownames(abiotic_hm_plotdata).
+Por fim, as variáveis abiotic_hm_plotdata, biotic_hm_plotdata, 
+     metadata_abiotic, metadata_biotic, foram salvas em uma arquivo chamado dge_objects.RData. com a função save.
+     
+# Traçar a mudança log2 vezes como um mapa de calor para ver quais genes respondem ao estresse abiótico e biótico.
+Primeirmente foi carregado o arquivo dge_objects.RData.
+
+# manipulando cores
+foi atrbuído à variàvel as cores c("#1F77B4FF", "#FF7F0EFF", "#2CA02CFF", "#D62728FF",
+               "#9467BDFF", "#8C564BFF", "#E377C2FF", "#7F7F7FFF",
+               "#BCBD22FF", "#17BECFFF", "#AEC7E8FF", "#FFBB78FF",
+               "#98DF8AFF", "#FF9896FF", "#C5B0D5FF", "#C49C94FF",
+               "#F7B6D2FF", "#C7C7C7FF", "#DBDB8DFF", "#9EDAE5FF")
+Em seguida, foi atribuída à variável ann_colors_abiotic, a função list com o argumento Stress = colors[seq_along(unique(metadata_abiotic$Stress))]. Depois a variável 
+stress dessa variável ann_colors_abiotic foi renomeada com a função rownames com os valores únicos de metadata_abiotic$Stress. Em seguida, o mesmo foi feito com 
+metadata_abiotic.
+Por fim, foi atrbuída à variável palette, a função colorRampPalette para definir a paleta de cores.
+
+
+#----Plot mapa de calor da mudança de dobra em resposta ao estresse abiótico----
+Aqui foi feito um pheatmap com a variável abiotic_hm_plotdata e depois um com biotic_hm_plotdata.
+
+# Combinando todos os heatmaps em um plot
+
+Foi atribuída à variável exp_figure a função ggarrange do pagote ggpubr, que uni objetos de plotagem em um só, que no caso são cheatmap_global_ggplot,
+                                cheatmap_abiotic_ggplot e cheatmap_biotic_ggplot. 
+Por fim, essa figura foi salva em um arquivo pdf com a função ggsave.
+
+#  Exportando informações sobre amostras e contrastes como uma tabela.
+
+# Contar o número de genes que são regulados positivamente por cada classe de estresse
+Aqui foi atribuída à variável a função apply, utilizando biotic_hm_plotdata como argumento, o número 1 como MARGIM (para linhas) e a função function(x) any(x > 0).
+o mesmo foi feito para abiotic_hm_plotdata. Depois essas duas variáveis foram unidas pelas colunas com a função cbind, depositadas na variável up_genes.
+
+# Contar o número de genes que são regulados negativamente por cada classe de estresse
+A mesma coisa que foi feita anteriormente foi feita aqui de novo, porém com a soma no final, de down genes, na coluna 1 e 2.
+
+# Mostrar os principais genes que são induzidos pelo maior número de condições
+Primeiro foi carrgeado o tidyverse. Depois foi atribuído a variável top_genes a função apply com biotic_hm_plotdata como argumento, com magim 1 (para linhas), com a função 
+function(x) which(x > 0).
+Depois foi atribuído a variável top_genes a tudo dentro da variável top_genes (lapply(top_genes, length) > 0), ou seja, tudo no top_genes que tenho comprimento
+maior que zero foi selecionado.
+Em seguida, foi atribuído à variável top_genes a função reduce, com a função rbind dentro e a função lapply, com a função seq_long(é uma função que cria um
+vetor que contém uma sequência de números de 1 ao comprimento do objeto) , com top_genes como argumento e a função function (x) { 
+y <- as.data.frame(top_genes[[x]])
+  z <- cbind(y, Gene = names(top_genes)[x])
+  return(z)
+  }))
+  
+  Depois foi utilizada a variável top_genes seguida de %>%  mutate(condition = rownames(top_genes)) %>%
+  mutate(condition = str_replace_all(condition, c("-.*" = ""))) %>%
+  select(Gene, condition) %>%
+  distinct() %>%
+  group_by(Gene) %>%
+  summarise(n = n()) %>%
+  arrange(-n)
+  
+  
+
+
+
+
+ 
