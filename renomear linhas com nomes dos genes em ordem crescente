@@ -1,0 +1,5 @@
+num_data <- gsub('\\D','', row.names(abiotic_hm_plotdata)) 
+print(num_data)
+row.names(abiotic_hm_plotdata) <- num_data
+abiotic_hm_plotdata_ordened <- abiotic_hm_plotdata[order(as.numeric(row.names(abiotic_hm_plotdata))), ] 
+row.names(abiotic_hm_plotdata_ordened) <- gsub('.*^','GmTLP', row.names(abiotic_hm_plotdata_ordened))
