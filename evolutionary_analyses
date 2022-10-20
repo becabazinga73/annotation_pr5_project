@@ -5,6 +5,9 @@ do tempo.
 
 -> Árvore de soja
 
+Foi feito o BLASTp no PLAZA, com a sequencia FASTA de PR-5 de soja e o maior score deu o próprio gene da sequência FASTA e o segundo deu uma PR-5 de Vigna mungo,
+que foi usado como outgroup(PLAZA ID: VMungo1215G1788)
+
 A árvore dos genes de soja com o gene de Vmungo (VMungo1215G1788) como outgroup foi inferida com o IQTREE2. Essa árvore foi inferida para se conhecer
 as relações evolutivas dos genes TLPs em soja, utilizando um gene de V. mungo como grupo externo para enrraizar a árvore, onde o grupo externo é 
 próximo o suficiente para permitir a inferência de dados de características ou sequenciamento molecular, mas longe o suficiente para ser um grupo
